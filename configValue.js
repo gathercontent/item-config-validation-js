@@ -108,23 +108,49 @@
 			return isValid;
 		};
 
+		var uniqueElementNames = function(arr, shouldFix, invalid) {
+  			var namesArray = [],
+  				res;
+
+  			_getElements(arr).map(function(el, i) {
+      			return el.forEach(function(item) {
+        			if (invalid === true) {
+          				item.name = item.name + Math.round(Math.random() * 1000 - 1 + 1);
+        			}
+        			namesArray.push(item.name);
+      			});
+   			});
+
+			if (namesArray.length) {
+				res = _hasDuplicates(namesArray);
+
+				if (!res && shouldFix) {
+					return uniqueElementNames(arr, true, true);
+				}
+				return res;
+			} else {
+				return true;
+			}
+		};
+
 		/**
 		 * Ensures all option names are unique
-		 * @param  {Array} arr The config
+		 *
+		 * @param  {Array} arr         The config
+		 * @param  {Boolean} shouldFix Tries to fix an invalid configuration
 		 * @return {Boolean}
 		 */
-		var uniqueOptionNames = function(arr) {
+		var uniqueOptionNames = function(arr, shouldFix) {
 			var namesArray = [],
 				res;
 
-			arr.map(function(tab) {
-			    return tab;
-			}).map(function(el) {
-			    return el.elements;
-			}).map(function(ea) {
+			_getElements(arr).map(function(ea) {
 				ea.forEach(function(item) {
 	      	    	if (item.options) {
-			        	return item.options.map(function(opt) {
+			        	return item.options.map(function(opt, i) {
+			        		if (shouldFix === true) {
+			        			opt.name = i + opt.name;
+			        		}
 			       	    	namesArray.push(opt.name);
 			            });
 			        }
@@ -133,6 +159,13 @@
 
 			if (namesArray.length) {
 				res = _hasDuplicates(namesArray);
+
+				// If there are duplicates and it needs fixing,
+				// re-run in order to fix the issue.
+				if (!res && fix) {
+					return uniqueOptionNames(arr, true);
+				}
+
 				_debug('uniqueOptionNames', res);
 				return res;
 			} else {
@@ -149,14 +182,10 @@
 		var otherOptionNotSingle = function(arr) {
 			var isValid = true;
 
-			arr.map(function(tab) {
-			    return tab;
-			}).map(function(elements) {
-			    return elements.elements;
-			}).forEach(function(item) {
+			_getElements(arr).map(function(item) {
 			    item.forEach(function(c) {
-			      if (typeof c.other_option !== 'undefined' && c.other_option === true) {
-			        if (c.options.length < 2) isValid = false;
+			        if (typeof c.other_option !== 'undefined' && c.other_option === true) {
+			            if (c.options.length < 2) isValid = false;
 			      }
 			    });
 			});
@@ -175,7 +204,7 @@
 			return shouldBeArray(arr) && noEmptyLabels(arr)
 				&& noStringLimits(arr) && uniqueOptionNames(arr)
 				&& booleanSelected(arr) && noEmptyOptions(arr)
-				&& otherOptionNotSingle(arr);
+				&& otherOptionNotSingle(arr) && uniqueElementNames(arr, true);
 		};
 
 		/********************
@@ -200,6 +229,19 @@
 		};
 
 		/**
+		 * Gets the individual items of a tab configuration.
+		 * @param  {Array} arr The config
+		 * @return {Array}
+		 */
+		var _getElements = function(arr) {
+  			return arr.map(function(tab) {
+    			return tab;
+  			}).map(function(elements) {
+    			return elements.elements;
+  			});
+		};
+
+		/**
 		 * Outputs individual tests.
 		 * @param  {String} name Name of the test
 		 * @param  {Boolean} res  The result of the test
@@ -216,6 +258,7 @@
 			noEmptyOptions: noEmptyOptions,
 			booleanSelected: booleanSelected,
 			uniqueOptionNames: uniqueOptionNames,
+			uniqueElementNames: uniqueElementNames,
 			otherOptionNotSingle: otherOptionNotSingle,
 			validateAll : validateAll
 		};
