@@ -5,7 +5,7 @@ describe('Config-Value Object', function() {
 
 		var runAll = function(test, results) {
 			samples.forEach(function(sample) {
-				results.push(test(sample));
+				results.push(test(sample, true));
 			});
 
 			return results;
@@ -59,7 +59,15 @@ describe('Config-Value Object', function() {
 			});
 		});
 
-		it('it should run all verifications at once', function() {
+		it('it should have unique names for elements across all tabs', function() {
+			var results = runAll(validateConfig().uniqueElementNames, []);
+
+			results.forEach(function(test) {
+				expect(test).to.equal(true);
+			});
+		});
+
+		it('it should run and pass all verifications at once', function() {
 			var results = runAll(validateConfig().validateAll, []);
 
 			results.forEach(function(test) {
@@ -69,6 +77,22 @@ describe('Config-Value Object', function() {
 
 		it('it should contain at least 1 option if "other" is active', function() {
 			var results = runAll(validateConfig().otherOptionNotSingle, []);
+
+			results.forEach(function(test) {
+				expect(test).to.equal(true);
+			});
+		});
+
+		it('it should have unique names for all tabs', function() {
+			var results = runAll(validateConfig().uniqueTabNames, []);
+
+			results.forEach(function(test) {
+				expect(test).to.equal(true);
+			});
+		});
+
+		it('it should have a non-empty value for other option fields', function() {
+			var results = runAll(validateConfig().otherOptionValueNotEmpty, []);
 
 			results.forEach(function(test) {
 				expect(test).to.equal(true);
