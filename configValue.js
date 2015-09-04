@@ -40,7 +40,6 @@
 			});
 
 			_debug('noEmptyLabels', isValid);
-
 			return isValid;
 		};
 
@@ -66,7 +65,9 @@
 			} else {
 				return true;
 			}
-		}
+
+			_debug('uniqueTabNames', isValid);
+		};
 
 		/**
 		 * Ensures the limits option is a number.
@@ -86,7 +87,6 @@
 			});
 
 			_debug('noStringLimits', isValid);
-
 			return isValid;
 		};
 
@@ -97,16 +97,29 @@
 		 */
 		var noEmptyOptions = function(arr) {
 			var isValid = true;
+			var createOption = function(options) {
+				return {
+					'name': 'opt' + _getRandomNr(),
+					'label': 'Option',
+					'selected': true };
+			};
 
 			arr.forEach(function(tab) {
 				tab.elements.forEach(function(element) {
 					for (var k in element) {
 						if (k === 'options') {
-							isValid = !!(element.options.length > 0);
+							isValid = (element.options.length > 0);
+
+							if (!isValid) {
+								element.options.push(createOption());
+								isValid = true;
+							}
 						}
 					}
 				});
 			});
+
+			console.log(arr[0].elements);
 
 			_debug('noEmptyOptions', isValid);
 
@@ -227,13 +240,12 @@
 				item.forEach(function(el) {
 					if (el.hasOwnProperty('other_option') && el['other_option'] === true) {
 						if (!el.options[el.options.length - 1].value) {
-							_debug('otherOptionValueNotEmpty - adding value key');
 							el.options[el.options.length - 1].value = 'Other';
 						}
 					};
 				});
 			});
-
+			_debug('otherOptionValueNotEmpty', isValid);
 			return true;
 		};
 
@@ -246,13 +258,14 @@
 			var isValid = true;
 
 			var createOption = function(options) {
-				return { 'name': 'op001', 'label': 'Option 1', 'selected': true };
+				return { 'name': 'op001', 'label': 'Option 1', 'selected': false };
 			};
 
 			_getElements(arr).map(function(item) {
 			    item.forEach(function(c) {
 			    	if (typeof c.other_option !== 'undefined' && c.other_option === true) {
 			            if (c.options.length < 2) {
+			            	// Add another option
 			            	c.options.push(createOption());
 			            	return (otherOptionNotSingle(arr));
 			            }
@@ -261,8 +274,119 @@
 			});
 
 			_debug('otherOptionNotSingle', isValid);
-
 			return isValid;
+		};
+
+		/**
+		 * Ensures the title value for Guidelines/Section isn't empty.
+		 *
+		 * @param  {Array} arr         The configuration
+		 * @param  {Boolean} shouldFix Tries to fix invalid config
+		 * @return {Boolean}
+		 */
+		var guidelinesNotEmpty = function(arr, shouldFix) {
+			var isValid = true;
+
+			_getElements(arr).map(function(element) {
+				element.filter(function(item) {
+					return item.type === 'section';
+				}).forEach(function(field) {
+					if (!field.title || field.title === ' ') {
+						switch (shouldFix) {
+						case true:
+							field.title = 'Guidelines';
+							break;
+
+						default:
+							isValid = false;
+						}
+					}
+				});
+			});
+
+			_debug('guidelinesNotEmpty', isValid);
+			return isValid;
+		};
+
+		/**
+		 * Ensures that only one selected radio box per element
+		 * is selected.
+		 *
+		 * @param  {Array} arr       The config
+		 * @param  {Boolean} shouldFix Attempts to fix invalid config
+		 * @return {Boolean}           Passing
+		 */
+		var onlyOneRadioSelection = function(arr, shouldFix) {
+			var isValid = true;
+			var selectedOptions = [];
+
+			_getElements(arr).map(function(element) {
+				element.filter(function(item) {
+					return item.type === 'choice_radio';
+				}).map(function(radio) {
+					return radio.options;
+				}).forEach(function(option) {
+					var count = 0;
+					selectedOptions.push(option);
+
+					// Count # of options with true
+					for (var k in option) {
+						if (option[k].selected === true) {
+							count += 1;
+						}
+					}
+
+					isValid = count > 1 ? false : true;
+
+					// Make them false if there's more than one selected
+					if (shouldFix && count > 1) {
+						selectedOptions.forEach(function(option) {
+							option.forEach(function(choice) {
+								choice.selected = false;
+							});
+						});
+						isValid = true;
+					}
+				});
+			});
+
+			_debug('onlyOneRadioSelection', isValid);
+			return isValid;
+		};
+
+		/**
+		 * Ensures the "option" fields don't have extra fields,
+		 * based on their type.
+		 *
+		 * @param  {Array} arr
+		 * @return {Boolean}
+		 */
+		var otherOptionNoExtraFields = function(arr) {
+			var noOther_Keys = ['name', 'label', 'selected'];
+			var other_Keys = ['name', 'label', 'selected', 'value'];
+
+			var options = arr.map(function(tab) {
+				return tab.elements;
+			}).map(function(element) {
+				return element.filter(function(item) {
+					return item.type === 'choice_radio' || item.type === 'choice_checkbox';
+				})
+					.forEach(function(opt) {
+						if (opt.other_option === false) {
+							opt.options.forEach(function(object) {
+								_compareObjects(object, noOther_Keys);
+							});
+						}
+
+						if (opt.other_option === true) {
+							opt.options.forEach(function(object) {
+								_compareObjects(object, other_Keys);
+							});
+						}
+				});
+			});
+
+			return true;
 		};
 
 		/**
@@ -275,7 +399,8 @@
 				&& noStringLimits(arr) && uniqueOptionNames(arr, shouldFix)
 				&& booleanSelected(arr, shouldFix) && noEmptyOptions(arr)
 				&& otherOptionNotSingle(arr, shouldFix) && uniqueElementNames(arr, shouldFix)
-				&& otherOptionValueNotEmpty(arr);
+				&& otherOptionValueNotEmpty(arr) && guidelinesNotEmpty(arr, shouldFix)
+				&& otherOptionNoExtraFields(arr);
 		};
 
 		/********************
@@ -320,6 +445,25 @@
 			return Math.round(Math.random() * 10000 - 1 + 1);
 		};
 
+		/**
+		 * Deletes unwanted properties in an object.
+		 * @param  {Object} object     The object
+		 * @param  {Array} properties  The array of keys to have
+		 * @return {[type]}            [description]
+		 */
+		var _compareObjects = function(object, properties) {
+			Object.keys(object).forEach(function(key) {
+				if (properties.indexOf(key) === -1) {
+					return delete object[key];
+				}
+			});
+		};
+
+		/**
+		 * Converts string faux booleans to real Booleans.
+		 * @param  {String|Boolean} input The real or faux boolean
+		 * @return {Boolean}
+		 */
 		var _booleanTransform = function(input) {
 			if (input === 'true' || input === true) {
 				return true;
@@ -349,6 +493,9 @@
 			otherOptionNotSingle: otherOptionNotSingle,
 			uniqueTabNames: uniqueTabNames,
 			otherOptionValueNotEmpty: otherOptionValueNotEmpty,
+			guidelinesNotEmpty: guidelinesNotEmpty,
+			onlyOneRadioSelection: onlyOneRadioSelection,
+			otherOptionNoExtraFields: otherOptionNoExtraFields,
 			validateAll : validateAll
 		};
 	};

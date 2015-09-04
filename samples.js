@@ -87,7 +87,7 @@
 					"options": [{
 					    "name": "op98",
 						"label": "Option 1",
-						"selected": true
+						"selected": false
 					},{
 					    "name": "op12",
 						"label": "Option 1",
@@ -114,7 +114,7 @@
 			      }]
 			  }];
 
-var sample4 = [{
+		var sample4 = [{
 			    "label": "",
 			    "name": "tab1",
 			    "hidden": false,
@@ -133,16 +133,18 @@ var sample4 = [{
 					"name": "el4",
 					"required": true,
 					"label": "Label",
-					"other_option": true,
+					"other_option": false,
 					"microcopy": "",
 					"options": [{
-					    "name": "op98",
-						"label": "Option 1",
-						"selected": true
+					    "name": "op91238",
+						"label": "Option 121",
+						"selected": true,
+						"lol": 'lol'
 					},{
 					    "name": "op12",
 						"label": "Option 1",
-						"selected": true
+						"selected": true,
+						"ishoulnot": 'be here'
 					}]
 				}]
 			  }];
@@ -206,6 +208,66 @@ var sample5 = [{
 			      }]
 			  }];
 
+		var sample6 = [{
+			    "label": "Content",
+			    "name": "tab1",
+			    "hidden": true,
+			    "elements": [{
+			        "type": "section",
+			        "name": "el134534432",
+			        "title": "",
+			        "subtitle": "subtitle"
+			      },{
+			        "type": "section",
+			        "name": "el134534432s",
+			        "title": "given title",
+			        "subtitle": "sub2title"
+			      },{
+					"type": "choice_radio",
+					"name": "el4",
+					"required": true,
+					"label": "Label",
+					"other_option": true,
+					"microcopy": "",
+					"options": [{
+					    "name": "op98",
+						"label": "Chicken 12",
+						"selected": true,
+						"extra": 'field'
+					},{
+					    "name": "op12",
+						"label": "Cow 1",
+						"selected": true,
+						"value": ""
+					}]
+				}]
+			  }];
 
-	exports.samples = [sample1, sample2, sample3, sample4, sample5];
+	var sample7 = [{
+			    "label": "Label",
+			    "name": "tab1",
+			    "hidden": false,
+			    "elements": [{
+			        "type": "text",
+			        "name": "el1",
+			        "required": false,
+			        "label": "Blog post",
+			        "value": "<p>Hello world</p>",
+			        "microcopy": "",
+			        "limit_type": "words",
+			        "limit": 1000,
+			        "plain_text": false
+			      },{
+					"type": "choice_radio",
+					"name": "el4",
+					"required": true,
+					"label": "Label",
+					"other_option": false,
+					"microcopy": "",
+					"options": []
+				}]
+			  }];
+
+
+	exports.samples = [sample1, sample2, sample3, sample4, sample5, sample6, sample7];
 }(this));

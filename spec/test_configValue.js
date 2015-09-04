@@ -98,5 +98,31 @@ describe('Config-Value Object', function() {
 				expect(test).to.equal(true);
 			});
 		});
+
+		it('it should ensure guidelines sections always have a value', function() {
+			var results = runAll(validateConfig().guidelinesNotEmpty, []);
+
+			results.forEach(function(test) {
+				expect(test).to.equal(true);
+			});
+		});
+
+		it('it should ensure radioboxes only have one selection', function() {
+			var results = runAll(validateConfig().onlyOneRadioSelection, []);
+
+			results.forEach(function(test) {
+				expect(test).to.equal(true);
+			});
+		});
+
+		it('it should prevent "other_option" from having additional fields', function() {
+			var results = runAll(validateConfig().otherOptionNoExtraFields, []);
+
+			results.forEach(function(test) {
+				expect(test).to.equal(true);
+			});
+		});
+
+
 	});
 });
