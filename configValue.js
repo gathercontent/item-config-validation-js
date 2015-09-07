@@ -16,8 +16,9 @@
 		 */
 		var shouldBeArray = function(arr) {
 			var res = Array.isArray(arr);
-			_debug('shouldBeArray', res);
+			if (!res) arr = [arr];
 
+			_debug('shouldBeArray', res);
 			return res;
 		};
 
@@ -119,10 +120,7 @@
 				});
 			});
 
-			console.log(arr[0].elements);
-
 			_debug('noEmptyOptions', isValid);
-
 			return isValid;
 		};
 
@@ -258,7 +256,7 @@
 			var isValid = true;
 
 			var createOption = function(options) {
-				return { 'name': 'op001', 'label': 'Option 1', 'selected': false };
+				return { name: 'opt' + _getRandomNr(), label: 'Option 1', selected: false };
 			};
 
 			_getElements(arr).map(function(item) {
@@ -358,7 +356,7 @@
 		 * Ensures the "option" fields don't have extra fields,
 		 * based on their type.
 		 *
-		 * @param  {Array} arr
+		 * @param  {Array} arr The configuration
 		 * @return {Boolean}
 		 */
 		var otherOptionNoExtraFields = function(arr) {
@@ -386,7 +384,104 @@
 				});
 			});
 
+			_debug('guidelinesNotEmpty', true);
 			return true;
+		};
+
+		/**
+		 * Ensures all option names are non-empty and valid strings.
+		 * @param  {Array} arr The configuration
+		 * @return {Boolean}     The validity
+		 */
+		var optionNameIsString = function(arr) {
+			var isValid = true;
+
+			_getElements(arr).map(function(elements) {
+				return elements.map(function(element) {
+					return element;
+				}).filter(function(options) {
+					return options.type === 'choice_radio' || options.type === 'choice_checkbox';
+				}).map(function(list) {
+					list.options.forEach(function(option) {
+						// If there's no name, create one
+						if (!option.name.length) {
+							isValid = false;
+							option.name = 'opt' + _getRandomNr();
+						}
+						// If it's a number, convert to string
+						if (typeof option.name !== 'string') {
+							isValid = false;
+							option.name = option.name.toString();
+						}
+					});
+				});
+			});
+
+			if (!isValid) return optionNameIsString(arr);
+
+			_debug('optionNameIsString', isValid);
+			return isValid;
+		};
+
+		/**
+		 * Ensures the value attribute for a text field is present.
+		 *
+		 * @param  {Array} arr The configuration
+		 * @return {Boolean}     Its validity
+		 */
+		var textValueAttributeExists = function(arr) {
+			var isValid = false;
+
+			_getElements(arr).map(function(elements) {
+				return elements.map(function(element) {
+					return element;
+				}).filter(function(item) {
+					return item.type === 'text';
+				}).map(function(text) {
+					for (var k in text) {
+						if (text.hasOwnProperty('value')) {
+							isValid = true;
+						} else {
+							text.value = ' ';
+						}
+					}
+				});
+			});
+
+			isValid = true;
+			_debug('textValueAttributeExists', isValid);
+			return isValid;
+		};
+
+		/**
+		 * Ensures a non-selected "other option" does not have a value.
+		 * @param  {Array} arr    The configuration
+		 * @return {Boolean}      Passing test
+		 */
+		var otherOptionValueEmptyNotSelected = function(arr) {
+			var isValid = false;
+
+			_getElements(arr).map(function(elements) {
+				return elements.map(function(element) {
+					return element;
+				}).filter(function(item) {
+					return item.type === 'choice_radio' && item.other_option === true;
+				}).map(function(choice) {
+					return choice.options;
+				}).forEach(function(values) {
+					values.forEach(function(option) {
+						if (typeof option.value !== 'undefined'
+							&& option.value !== ''
+							&& option.selected === false) {
+								option.value = '';
+						}
+					});
+				});
+			});
+
+			isValid = true;
+			_debug('otherOptionValueEmptyNotSelected', isValid);
+			return isValid;
 		};
 
 		/**
@@ -400,7 +495,8 @@
 				&& booleanSelected(arr, shouldFix) && noEmptyOptions(arr)
 				&& otherOptionNotSingle(arr, shouldFix) && uniqueElementNames(arr, shouldFix)
 				&& otherOptionValueNotEmpty(arr) && guidelinesNotEmpty(arr, shouldFix)
-				&& otherOptionNoExtraFields(arr);
+				&& otherOptionNoExtraFields(arr) && textValueAttributeExists(arr)
+				&& otherOptionValueEmptyNotSelected(arr);
 		};
 
 		/********************
@@ -496,6 +592,9 @@
 			guidelinesNotEmpty: guidelinesNotEmpty,
 			onlyOneRadioSelection: onlyOneRadioSelection,
 			otherOptionNoExtraFields: otherOptionNoExtraFields,
+			optionNameIsString: optionNameIsString,
+			textValueAttributeExists: textValueAttributeExists,
+			otherOptionValueEmptyNotSelected: otherOptionValueEmptyNotSelected,
 			validateAll : validateAll
 		};
 	};

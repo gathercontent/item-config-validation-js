@@ -123,6 +123,30 @@ describe('Config-Value Object', function() {
 			});
 		});
 
+		it('it should make sure the option name attribute is a string', function() {
+			var results = runAll(validateConfig().optionNameIsString, []);
+
+			results.forEach(function(test) {
+				expect(test).to.equal(true);
+			});
+		});
+
+		it('it should make sure the text value attribute exists', function() {
+			var results = runAll(validateConfig().textValueAttributeExists, []);
+
+			results.forEach(function(test) {
+				expect(test).to.equal(true);
+			});
+		});
+
+		it('it should make sure the other option value is empty if its not selected', function() {
+			var results = runAll(validateConfig().otherOptionValueEmptyNotSelected, []);
+
+			results.forEach(function(test) {
+				expect(test).to.equal(true);
+			});
+		});
+
 
 	});
 });

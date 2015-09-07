@@ -200,7 +200,6 @@ var sample5 = [{
 			        "name": "el1",
 			        "required": false,
 			        "label": "Blog post",
-			        "value": "<p>Hello world</p>",
 			        "microcopy": "",
 			        "limit_type": "words",
 			        "limit": 50,
@@ -230,12 +229,12 @@ var sample5 = [{
 					"other_option": true,
 					"microcopy": "",
 					"options": [{
-					    "name": "op98",
+					    "name": "",
 						"label": "Chicken 12",
 						"selected": true,
 						"extra": 'field'
 					},{
-					    "name": "op12",
+					    "name": 23423,
 						"label": "Cow 1",
 						"selected": true,
 						"value": ""
@@ -268,6 +267,40 @@ var sample5 = [{
 				}]
 			  }];
 
+	var sample8 = [{
+			    "label": "Label",
+			    "name": "tab1",
+			    "hidden": false,
+			    "elements": [{
+			        "type": "text",
+			        "name": "el1",
+			        "required": false,
+			        "label": "Blog post",
+			        "value": "<p>Hello world</p>",
+			        "microcopy": "",
+			        "limit_type": "words",
+			        "limit": 1000,
+			        "plain_text": false
+			      },{
+					"type": "choice_radio",
+					"name": "el4",
+					"required": true,
+					"label": "Label",
+					"other_option": true,
+					"microcopy": "",
+					"options": [{
+					    "name": "opt9482837263",
+						"label": "Hello is it me you are looking for",
+						"selected": true
+					},{
+					    "name": 23423,
+						"label": "Cow 1",
+						"selected": false,
+						"value": "I should not have a value"
+					}]
+				}]
+			  }];
 
-	exports.samples = [sample1, sample2, sample3, sample4, sample5, sample6, sample7];
+
+	exports.samples = [sample1, sample2, sample3, sample4, sample5, sample6, sample7, sample8];
 }(this));
