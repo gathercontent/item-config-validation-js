@@ -403,6 +403,10 @@
 					return options.type === 'choice_radio' || options.type === 'choice_checkbox';
 				}).map(function(list) {
 					list.options.forEach(function(option) {
+						// Verify if the attribute is present
+						if (typeof option.name == 'undefined') {
+							option.name = '';
+						}
 						// If there's no name, create one
 						if (!option.name.length) {
 							isValid = false;
@@ -485,6 +489,32 @@
 		};
 
 		/**
+		 * Ensure text elements do not contain extra attributes
+		 * @param  {Array} arr The config
+		 * @return {Boolean}
+		 */
+		var textElementNoExtraAttributes = function(arr) {
+			var isValid = false;
+			var allowedAttrs = ['type', 'required', 'name', 'label', 'value', 'microcopy',
+								'limit_type', 'limit', 'plain_text'];
+
+			_getElements(arr).map(function(elements) {
+				return elements.map(function(element) {
+					return element;
+				}).filter(function(item) {
+					return item.type === 'text';
+				}).map(function(object) {
+					_compareObjects(object, allowedAttrs);
+				});
+			});
+
+			isValid = true;
+
+			_debug('textElementNoExtraAttributes', isValid);
+			return isValid;
+		};
+
+		/**
 		 * Runs all validations at once.
 		 * @param  {Array} arr   The config
 		 * @return {Boolean}     If all tests pass
@@ -496,7 +526,7 @@
 				&& otherOptionNotSingle(arr, shouldFix) && uniqueElementNames(arr, shouldFix)
 				&& otherOptionValueNotEmpty(arr) && guidelinesNotEmpty(arr, shouldFix)
 				&& otherOptionNoExtraFields(arr) && textValueAttributeExists(arr)
-				&& otherOptionValueEmptyNotSelected(arr);
+				&& otherOptionValueEmptyNotSelected(arr) && textElementNoExtraAttributes(arr);
 		};
 
 		/********************
@@ -545,7 +575,6 @@
 		 * Deletes unwanted properties in an object.
 		 * @param  {Object} object     The object
 		 * @param  {Array} properties  The array of keys to have
-		 * @return {[type]}            [description]
 		 */
 		var _compareObjects = function(object, properties) {
 			Object.keys(object).forEach(function(key) {
@@ -595,6 +624,7 @@
 			optionNameIsString: optionNameIsString,
 			textValueAttributeExists: textValueAttributeExists,
 			otherOptionValueEmptyNotSelected: otherOptionValueEmptyNotSelected,
+			textElementNoExtraAttributes: textElementNoExtraAttributes,
 			validateAll : validateAll
 		};
 	};

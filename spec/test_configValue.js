@@ -147,6 +147,13 @@ describe('Config-Value Object', function() {
 			});
 		});
 
+		it('it should make sure the text element has no additional attributes', function() {
+			var results = runAll(validateConfig().textElementNoExtraAttributes, []);
+
+			results.forEach(function(test) {
+				expect(test).to.equal(true);
+			});
+		});
 
 	});
 });

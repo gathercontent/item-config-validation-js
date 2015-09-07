@@ -275,12 +275,13 @@ var sample5 = [{
 			        "type": "text",
 			        "name": "el1",
 			        "required": false,
-			        "label": "Blog post",
-			        "value": "<p>Hello world</p>",
+			        "label": "I have an extra field",
+			        "value": "that i should not have",
 			        "microcopy": "",
 			        "limit_type": "words",
-			        "limit": 1000,
-			        "plain_text": false
+			        "limit": 2000,
+			        "plain_text": false,
+			        "remove_me": 'remove me'
 			      },{
 					"type": "choice_radio",
 					"name": "el4",
