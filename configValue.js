@@ -297,6 +297,7 @@
 
 						default:
 							isValid = false;
+							break;
 						}
 					}
 				});
@@ -404,7 +405,7 @@
 				}).map(function(list) {
 					list.options.forEach(function(option) {
 						// Verify if the attribute is present
-						if (typeof option.name == 'undefined') {
+						if (typeof option.name === 'undefined') {
 							option.name = '';
 						}
 						// If there's no name, create one
