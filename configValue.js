@@ -167,27 +167,20 @@
 
   			_getElements(arr).map(function(el, i) {
       			return el.forEach(function(item) {
-        			//if (invalid === true) {
-        			//console.log(namesArray);
-        				if (namesArray.indexOf(item.name) > -1) {
-        					item.name = item.name + _getRandomNr();
-        					//console.log('duplicate', item.name);
-        				}
+        			if (namesArray.indexOf(item.name) > -1) {
+    					item.name = item.name + _getRandomNr();
+    				}
 
-        				namesArray.push(item.name);
-          				//
-        			//}
-
+    				namesArray.push(item.name);
       			});
    			});
-
-   			console.log(namesArray);
 
 			if (namesArray.length) {
 				res = _hasNoDuplicates(namesArray);
 
 				if (!res && shouldFix) {
-					//return uniqueElementNames(arr, true, true);
+					// Run again if the randomizer generated the same outpout
+					return uniqueElementNames(arr, true, true);
 				}
 				return res;
 			} else return true;
@@ -208,22 +201,17 @@
 				ea.forEach(function(item) {
 	      	    	if (item.options) {
 			        	return item.options.forEach(function(opt, i) {
-
-			        		if (namesArray.indexOf(opt.name) > -1) {
+			        		if (namesArray.indexOf(opt.name) > -1 || !opt.name) {
 			        			opt.name = opt.name + _getRandomNr();
 			        		}
 
 			        		namesArray.push(opt.name);
-
-			        		//if (invalid === true) {
-			        			//opt.name = opt.name + _getRandomNr();
-			        		//}
 			            });
 			        }
 			  	});
 			});
 
-
+			console.log(namesArray);
 
 			if (namesArray.length) {
 				res = _hasNoDuplicates(namesArray);

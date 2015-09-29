@@ -307,7 +307,56 @@ var sample5 = [{
 				}]
 			  }];
 
+var sample9 = [{
+			    "label": "Label",
+			    "name": "tab1",
+			    "hidden": false,
+			    "elements": [{
+			        "type": "text",
+			        "name": "el1",
+			        "required": false,
+			        "label": "I have an extra field",
+			        "value": "that i should not have",
+			        "microcopy": "",
+			        "limit_type": "words",
+			        "limit": 2000,
+			        "plain_text": false,
+			        "remove_me": 'remove me'
+			      },{
+					"type": "choice_radio",
+					"name": "el4",
+					"required": true,
+					"label": "Label",
+					"other_option": true,
+					"microcopy": "",
+					"options": [{
+					    "name": "asd",
+						"label": "Hello is it me you are looking for",
+						"selected": true
+					},{
+					    "name": "",
+						"label": "Cow 1",
+						"selected": false,
+						"value": "I should not have a value"
+					}]
+				},{
+					"type": "choice_checkbox",
+					"name": "el4",
+					"required": false,
+					"label": "Label",
+					"microcopy": "",
+					"options": [{
+					    "name": "maintain-me",
+						"label": "Option 1",
+						"selected": false,
+						"value": ""
+					},{
+					    "name": "maintain-me",
+						"label": "Option 3",
+						"selected": true
+					}]
+				}]
+			  }];
 
-	//exports.samples = [sample4];
-	exports.samples = [sample1, sample2, sample3, sample4, sample5, sample6, sample7, sample8];
+	exports.samples = [sample1, sample2, sample3, sample4, sample5, sample6, sample7, sample8, sample9];
 }(this));
