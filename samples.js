@@ -130,20 +130,25 @@
 			        "plain_text": false
 			      },{
 					"type": "choice_radio",
-					"name": "el4",
+					"name": "el2",
 					"required": true,
 					"label": "Label",
 					"other_option": false,
 					"microcopy": "",
 					"options": [{
-					    "name": "op91238",
+					    "name": "i should be here",
 						"label": "Option 121",
 						"selected": true,
 						"lol": 'lol'
-					},{
-					    "name": "op12",
+					}, {
+					    "name": "first option should be i should be here",
 						"label": "Option 1",
-						"selected": true,
+						"selected": false,
+						"ishoulnot": 'be here'
+					},{
+					    "name": "first option should be i should be here",
+						"label": "Option 14",
+						"selected": false,
 						"ishoulnot": 'be here'
 					}]
 				}]
@@ -303,5 +308,6 @@ var sample5 = [{
 			  }];
 
 
+	//exports.samples = [sample4];
 	exports.samples = [sample1, sample2, sample3, sample4, sample5, sample6, sample7, sample8];
 }(this));

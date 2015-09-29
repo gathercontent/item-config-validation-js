@@ -167,18 +167,27 @@
 
   			_getElements(arr).map(function(el, i) {
       			return el.forEach(function(item) {
-        			if (invalid === true) {
-          				item.name = item.name + _getRandomNr();
-        			}
-        			namesArray.push(item.name);
+        			//if (invalid === true) {
+        			//console.log(namesArray);
+        				if (namesArray.indexOf(item.name) > -1) {
+        					item.name = item.name + _getRandomNr();
+        					//console.log('duplicate', item.name);
+        				}
+
+        				namesArray.push(item.name);
+          				//
+        			//}
+
       			});
    			});
+
+   			console.log(namesArray);
 
 			if (namesArray.length) {
 				res = _hasNoDuplicates(namesArray);
 
 				if (!res && shouldFix) {
-					return uniqueElementNames(arr, true, true);
+					//return uniqueElementNames(arr, true, true);
 				}
 				return res;
 			} else return true;
@@ -198,15 +207,23 @@
 			_getElements(arr).map(function(ea) {
 				ea.forEach(function(item) {
 	      	    	if (item.options) {
-			        	return item.options.map(function(opt, i) {
-			        		if (invalid === true) {
+			        	return item.options.forEach(function(opt, i) {
+
+			        		if (namesArray.indexOf(opt.name) > -1) {
 			        			opt.name = opt.name + _getRandomNr();
 			        		}
-			       	    	namesArray.push(opt.name);
+
+			        		namesArray.push(opt.name);
+
+			        		//if (invalid === true) {
+			        			//opt.name = opt.name + _getRandomNr();
+			        		//}
 			            });
 			        }
 			  	});
 			});
+
+
 
 			if (namesArray.length) {
 				res = _hasNoDuplicates(namesArray);
