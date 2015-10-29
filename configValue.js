@@ -269,7 +269,7 @@
 			    	if (typeof c.other_option !== 'undefined' && c.other_option === true) {
 			            if (c.options.length < 2) {
 			            	// Add another option
-			            	c.options.push(createOption());
+			            	c.options.unshift(createOption());
 			            	return (otherOptionNotSingle(arr));
 			            }
 			    	}
